@@ -36,7 +36,10 @@ def process(path):
         total_games += 1
         with open(path + '/' + i) as json_input:
             local_items_played = set()
-            data = json.load(json_input)
+            try:
+                data = json.load(json_input)
+            except:
+                print "Something wrong with this file", path + '/' + i
 
             if "participants" not in data:
                 # Something weird happened
