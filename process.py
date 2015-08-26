@@ -2,8 +2,11 @@ import sys
 import json
 import os
 
+# Version of path
+version = None
+
 # Example: {69: "Lich Bane"} which means Lich Bane is id 69
-item_id_to_name = {}
+item_id_to_name = {} 
 
 # Example: {69: 25} which means Lich Bane was played in 25 game
 games_played = {}
@@ -18,15 +21,10 @@ total_games = 0
 
 def load_items():
     global item_id_to_name
-    with open('item.json', 'r') as items:
+    with open('item' + version + '.json', 'r') as items:
         data = json.load(items)
         for key in data["data"]:
             item_id_to_name[key] = data["data"][key]["name"]
-    with open('item.json.1', 'r') as items:
-        data = json.load(items)
-        for key in data["data"]:
-            item_id_to_name[key] = data["data"][key]["name"]
-    
 
 def process(path):
     global total_games, purchases_won, num_of_purchases, games_played
@@ -62,11 +60,14 @@ def process(path):
     
 
 def main():
-    if len(sys.argv) == 1:
-        print "Please specify path to match JSON files"
+    if len(sys.argv) < 3:
+        print "Please specify path to match JSON files and patch version (11/14)" \
+              "For example, \"python process.py NA/{path} 11\""
         return
     else:
         print "Loading JSON files in", sys.argv[1] 
+    global version
+    version = sys.argv[2]
     load_items()
     process(sys.argv[1])
     print "Popularity"
