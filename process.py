@@ -28,44 +28,51 @@ def load_items():
 
 def process(path):
     global total_games, purchases_won, num_of_purchases, games_played
-    output = open(path+'.csv', 'w')
+    total_files = 0
+    print "Computing number of files"
+    for dirpath, dirnames, filenames in os.walk(path):
+        total_files += len(filenames)
+         
     progress_counter = 0.0
-    for i in os.listdir(path):
-        progress_counter += 1.0
-        sys.stderr.write("\rProgress: %f%%" % (progress_counter / len(os.listdir(path)) * 100)) 
-        total_games += 1
-        with open(path + '/' + i) as json_input:
-            local_items_played = set()
-            try:
-                data = json.load(json_input)
-            except:
-                print "Something wrong with this file", path + '/' + i
+    for dirpath, dirnames, filenames in os.walk(path):
+        print "Processing %s" % dirpath
+        fullnames = [os.path.join(dirpath, f) for f in filenames]
 
-            if "participants" not in data:
-                # Something weird happened
-                print "Check", path + '/' + i
-                continue
+        for f in fullnames:
+            progress_counter += 1.0
+            sys.stderr.write("\rProgress: %f%%" % (progress_counter / total_files * 100)) 
+            total_games += 1
+            with open(f) as json_input:
+                local_items_played = set()
+                try:
+                    data = json.load(json_input)
+                except:
+                    print "Something wrong with this file", f 
 
-            for player in data["participants"]:
-                won = player["stats"]["winner"]
-                for j in range(7):
-                    item = player["stats"]["item"+str(j)]
-                    if item == 0:
-                        continue
-                    local_items_played.add(item)
-                    num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
-                    if won:
-                        purchases_won[item] = purchases_won.get(item, 0) + 1
-            for j in local_items_played:
-                games_played[j] = games_played.get(j, 0) + 1
+                if "participants" not in data:
+                    # Something weird happened
+                    print "Check", f
+                    continue
 
-    output.close()
+                for player in data["participants"]:
+                    won = player["stats"]["winner"]
+                    for j in range(7):
+                        item = player["stats"]["item"+str(j)]
+                        if item == 0:
+                            continue
+                        local_items_played.add(item)
+                        num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
+                        if won:
+                            purchases_won[item] = purchases_won.get(item, 0) + 1
+                for j in local_items_played:
+                    games_played[j] = games_played.get(j, 0) + 1
+
     
 
 def main():
     if len(sys.argv) < 3:
-        print "Please specify path to match JSON files and patch version (11/14)" \
-              "For example, \"python process.py NA/{path} 11\""
+        print """Please specify path to match JSON files and patch version (11/14) 
+              For example, "python process.py NA/{path} 11 """
         return
     else:
         print "Loading JSON files in", sys.argv[1] 
@@ -73,13 +80,18 @@ def main():
     version = sys.argv[2]
     load_items()
     process(sys.argv[1])
-    print "Popularity"
-    for key in games_played:
-        print item_id_to_name[str(key)], ':', float(games_played[key]) / total_games    
 
-    print "\n\nWin Rates"
-    for key in purchases_won:
-        print item_id_to_name[str(key)], ':', float(purchases_won[key]) / num_of_purchases[key]
+    with open('item_pop_%s.csv'%version,'w') as f:
+        for key in games_played:
+            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(games_played[key]) / total_games))
+
+    with open('item_pop_%s.csv'%version,'w') as f:
+        for key in purchases_won:
+            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(purchases_won[key]) / num_of_purchases[key]))
     
+    with open('item_%s.csv'%version,'w') as f:
+        for key in games_played:
+            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played[key]) / total_games,float(purchases_won[key]) / num_of_purchases[key]))
+
 if __name__ == "__main__":
     main()
