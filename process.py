@@ -3,7 +3,7 @@ import json
 import os
 
 # Version of path
-version = None
+version = None 
 
 # Example: {69: "Lich Bane"} which means Lich Bane is id 69
 item_id_to_name = {} 
@@ -32,7 +32,7 @@ def process(path):
     progress_counter = 0.0
     for i in os.listdir(path):
         progress_counter += 1.0
-        sys.stdout.write("\rProgress: %f%%" % (progress_counter / len(os.listdir(path)) * 100)) 
+        sys.stderr.write("\rProgress: %f%%" % (progress_counter / len(os.listdir(path)) * 100)) 
         total_games += 1
         with open(path + '/' + i) as json_input:
             local_items_played = set()
