@@ -64,6 +64,7 @@ def process(path):
 def main():
     if len(sys.argv) == 1:
         print "Please specify path to match JSON files"
+        return
     else:
         print "Loading JSON files in", sys.argv[1] 
     load_items()
