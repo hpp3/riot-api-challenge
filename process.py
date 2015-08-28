@@ -83,7 +83,7 @@ def main():
 
     with open('item_pop_%s.csv'%version,'w') as f:
         for key in games_played:
-            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(games_played[key]) / total_games))
+            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases[key]) / total_games))
 
     with open('item_win_%s.csv'%version,'w') as f:
         for key in purchases_won:
