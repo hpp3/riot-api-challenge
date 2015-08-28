@@ -117,25 +117,13 @@ def main():
     load_champions()
     process(sys.argv[1])
 
-    with open('item_pop_%s.csv'%version,'w') as f:
-        for key in games_played:
-            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases.get(key, 0)) / total_games))
-
-    with open('item_win_%s.csv'%version,'w') as f:
-        for key in num_of_purchases:
-            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
-
     with open('item_%s.csv'%version,'w') as f:
         for key in games_played:
             f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
 
-    with open('champ_pick_%s.csv'%version,'w') as f:
+    with open('champ_%s.csv'%version,'w') as f:
         for key in champion_games_played:
-            f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games))
-    
-    with open('champ_win_%s.csv'%version,'w') as f:
-        for key in champion_games_played:
-            f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0)))
+            f.write("%s,%d,%f,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games),float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0))
     
     with open('champ_items_%s.csv'%version,'w') as f:
         f.write("Champion Name, ")
