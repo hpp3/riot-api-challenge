@@ -19,12 +19,30 @@ purchases_won = {}
 
 total_games = 0
 
+# Example: {1: 25} means champion ID 1 was played 25 times
+champion_games_played = {}
+
+# Example: {1: 25} means champion 1 won 25 ranked games
+champion_games_won = {}
+
+# Example: {1: "Akali"} means champion with ID 1 is Akali
+champion_id_to_name = {}
+
 def load_items():
     global item_id_to_name
     with open('item' + version + '.json', 'r') as items:
         data = json.load(items)
         for key in data["data"]:
             item_id_to_name[key] = data["data"][key]["name"]
+
+def load_champions():
+    global champion_id_to_name
+    with open('champion' + version + '.json', 'r') as champs:
+        data = json.load(champs)
+        for key in data["data"]:
+            champ = key
+            id = data["data"][champ]["key"]
+            champion_id_to_name[id] = champ
 
 def process(path):
     global total_games, purchases_won, num_of_purchases, games_played
@@ -55,6 +73,7 @@ def process(path):
                     continue
 
                 for player in data["participants"]:
+                    # Process item related info
                     won = player["stats"]["winner"]
                     for j in range(7):
                         item = player["stats"]["item"+str(j)]
@@ -64,10 +83,16 @@ def process(path):
                         num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
                         if won:
                             purchases_won[item] = purchases_won.get(item, 0) + 1
+
+                    # Process champion related info
+                    champ = player["championId"]
+                    
+                    champion_games_played[champ] = champion_games_played.get(champ, 0) + 1
+                    if won:
+                        champion_games_won[champ] = champion_games_won.get(champ, 0) + 1
+                    
                 for j in local_items_played:
                     games_played[j] = games_played.get(j, 0) + 1
-
-    
 
 def main():
     if len(sys.argv) < 3:
@@ -79,19 +104,28 @@ def main():
     global version
     version = sys.argv[2]
     load_items()
+    load_champions()
     process(sys.argv[1])
 
     with open('item_pop_%s.csv'%version,'w') as f:
         for key in games_played:
-            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases[key]) / total_games))
+            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases.get(key, 0)) / total_games))
 
     with open('item_win_%s.csv'%version,'w') as f:
-        for key in purchases_won:
-            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(purchases_won[key]) / num_of_purchases[key]))
+        for key in num_of_purchases:
+            f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
+
+    with open('champ_pick_%s.csv'%version,'w') as f:
+        for key in champion_games_played:
+            f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games))
+    
+    with open('champ_win_%s.csv'%version,'w') as f:
+        for key in champion_games_played:
+            f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0)))
     
     with open('item_%s.csv'%version,'w') as f:
         for key in games_played:
-            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played[key]) / total_games,float(purchases_won[key]) / num_of_purchases[key]))
+            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
 
 if __name__ == "__main__":
     main()
