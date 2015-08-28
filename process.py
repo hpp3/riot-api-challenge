@@ -28,6 +28,10 @@ champion_games_won = {}
 # Example: {1: "Akali"} means champion with ID 1 is Akali
 champion_id_to_name = {}
 
+# Example: {1: {3000: 69}} means 69 champions with ID 1 bought item #3000.
+# {champion: {item: # of times purchased}}
+champion_item_purchased = {}
+
 def load_items():
     global item_id_to_name
     with open('item' + version + '.json', 'r') as items:
@@ -73,8 +77,10 @@ def process(path):
                     continue
 
                 for player in data["participants"]:
-                    # Process item related info
                     won = player["stats"]["winner"]
+                    champ = player["championId"]
+
+                    # Process item related info
                     for j in range(7):
                         item = player["stats"]["item"+str(j)]
                         if item == 0:
@@ -83,10 +89,14 @@ def process(path):
                         num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
                         if won:
                             purchases_won[item] = purchases_won.get(item, 0) + 1
+                        
+                        if champ not in champion_item_purchased:
+                            champion_item_purchased[champ] = {}
+                        if item not in champion_item_purchased[champ]:
+                            champion_item_purchased[champ][item] = 0 
+                        champion_item_purchased[champ][item] += 1
 
                     # Process champion related info
-                    champ = player["championId"]
-                    
                     champion_games_played[champ] = champion_games_played.get(champ, 0) + 1
                     if won:
                         champion_games_won[champ] = champion_games_won.get(champ, 0) + 1
@@ -115,6 +125,10 @@ def main():
         for key in num_of_purchases:
             f.write("%s,%d,%f\n" % (item_id_to_name[str(key)],key,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
 
+    with open('item_%s.csv'%version,'w') as f:
+        for key in games_played:
+            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
+
     with open('champ_pick_%s.csv'%version,'w') as f:
         for key in champion_games_played:
             f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games))
@@ -123,9 +137,20 @@ def main():
         for key in champion_games_played:
             f.write("%s,%d,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0)))
     
-    with open('item_%s.csv'%version,'w') as f:
-        for key in games_played:
-            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
-
+    with open('champ_items_%s.csv'%version,'w') as f:
+        f.write("Champion Name, ")
+        for item in item_id_to_name:
+            f.write(item_id_to_name[item] + " bought, ")
+        f.write("\n")
+            
+        for key in champion_item_purchased:
+            f.write(str(key) + ", ")
+            for item in item_id_to_name:
+                if int(item) not in champion_item_purchased[(key)]:
+                    f.write("0, ")
+                else:
+                    f.write(str(float(champion_item_purchased[key][int(item)]) / champion_games_played[key]) + ", ")
+            f.write("\n")
+    
 if __name__ == "__main__":
     main()
