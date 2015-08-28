@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css", rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous")
+
+  .navbar.navbar-default.navbar-static-top(role='navigation')
+    .container
+      .navbar-header
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href='#') API(tems)
+      .navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li.active
+            a(href='#') Home
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown')
+              | Items
+              span.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(href='#') Chart
+              li
+                a(href='#') Individual
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown')
+              | Champions
+              span.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(href='#') Chart
+              li
+                a(href='#') Individual
+
+
+    
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous")
+  body!=body
