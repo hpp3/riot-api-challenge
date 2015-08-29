@@ -32,6 +32,10 @@ champion_id_to_name = {}
 # {champion: {item: # of times purchased}}
 champion_item_purchased = {}
 
+# Example: {1: {(1, 2, 3, 4, 5, 6):10}} there 10 people to built champion with ID 1 with items 1,2,3,4,5,6
+# The item build must be sorted in a tuple
+champion_build = {}
+
 def load_items():
     global item_id_to_name
     with open('item' + version + '.json', 'r') as items:
@@ -79,12 +83,14 @@ def process(path):
                 for player in data["participants"]:
                     won = player["stats"]["winner"]
                     champ = player["championId"]
+                    champ_items = []
 
                     # Process item related info
                     for j in range(7):
                         item = player["stats"]["item"+str(j)]
                         if item == 0:
                             continue
+                        champ_items.append(item)
                         local_items_played.add(item)
                         num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
                         if won:
@@ -100,7 +106,16 @@ def process(path):
                     champion_games_played[champ] = champion_games_played.get(champ, 0) + 1
                     if won:
                         champion_games_won[champ] = champion_games_won.get(champ, 0) + 1
-                    
+
+                    # Ignore non full builds
+                    if len(champ_items) == 7:
+                        champ_items.sort()
+                        champ_items = tuple(champ_items)
+                        if champ not in champion_build:
+                            champion_build[champ] = {}
+                        if champ_items not in champion_build[champ]:
+                            champion_build[champ][champ_items] = 0
+                        champion_build[champ][champ_items] += 1 
                 for j in local_items_played:
                     games_played[j] = games_played.get(j, 0) + 1
 
@@ -119,26 +134,33 @@ def main():
 
     with open('item_%s.csv'%version,'w') as f:
         for key in games_played:
-            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(games_played.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
+            f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
 
     with open('champ_%s.csv'%version,'w') as f:
         for key in champion_games_played:
-            f.write("%s,%d,%f,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games),float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0))
+            f.write("%s,%d,%f,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games,float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0)))
     
     with open('champ_items_%s.csv'%version,'w') as f:
-        f.write("Champion Name, ")
+        f.write("Champion Name, Champion Key, ")
         for item in item_id_to_name:
             f.write(item_id_to_name[item] + " bought, ")
         f.write("\n")
             
         for key in champion_item_purchased:
-            f.write(str(key) + ", ")
+            f.write(champion_id_to_name[str(key)] + ", " + str(key) + ", ")
             for item in item_id_to_name:
                 if int(item) not in champion_item_purchased[(key)]:
                     f.write("0, ")
                 else:
                     f.write(str(float(champion_item_purchased[key][int(item)]) / champion_games_played[key]) + ", ")
             f.write("\n")
-    
+
+    with open('champ_build_%s.csv' % version, 'w') as f:
+        f.write("Champion Name, Champion Key, Most Frequent Build\n") 
+        for key in champion_build:
+            count, build = max((v, k) for k, v in champion_build[key].items())
+            build = [item_id_to_name[str(i)] for i in build]
+            f.write("%s, %d, %s\n" % (champion_id_to_name[str(key)], key, str(build).replace(",", ";")))
+            
 if __name__ == "__main__":
     main()
