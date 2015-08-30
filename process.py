@@ -47,6 +47,11 @@ champion_item_purchased = {}
 # Example: {1: {(1, 2, 3, 4, 5, 6):10}} there 10 people to built champion with ID 1 with items 1,2,3,4,5,6
 # The item build must be sorted in a tuple
 champion_build = {}
+
+# Example: {1: {(1, 2, 3, 4, 5, 6):10}} there 10 people to built champion with ID 1 with items 1,2,3,4,5,6 that won the game
+# The item build must be sorted in a tuple
+champion_winning_build = {}
+
 def is_ap(item):
     return item in ap_items
 
@@ -124,7 +129,7 @@ def process(path):
                     if 'events' in frame:
                         events += frame['events']
 
-                print get_build_orders(events) 
+                #print get_build_orders(events) 
                 for player in data["participants"]:
                     won = player["stats"]["winner"]
                     champ = player["championId"]
@@ -164,6 +169,14 @@ def process(path):
                         if champ_items not in champion_build[champ]:
                             champion_build[champ][champ_items] = 0
                         champion_build[champ][champ_items] += 1 
+
+                        if won:
+                            if champ not in champion_winning_build:
+                                champion_winning_build[champ] = {}
+                            if champ_items not in champion_winning_build[champ]:
+                                champion_winning_build[champ][champ_items] = 0
+                            champion_winning_build[champ][champ_items] += 1 
+
                 for j in local_items_played:
                     games_played[j] = games_played.get(j, 0) + 1
 
@@ -204,11 +217,16 @@ def main():
             f.write("\n")
 
     with open('champ_build_%s.csv' % version, 'w') as f:
-        f.write("Champion Name, Champion Key, Most Frequent Build\n") 
+        f.write("Champion Name, Champion Key, Most Frequent Build, Most Frequent Winning Build\n") 
         for key in champion_build:
             count, build = max((v, k) for k, v in champion_build[key].items())
             build = [item_id_to_name[str(i)] for i in build]
-            f.write("%s, %d, %s\n" % (champion_id_to_name[str(key)], key, str(build).replace(",", ";")))
+            if key in champion_winning_build:
+                win_count, win_build = max((v, k) for k, v in champion_winning_build[key].items())
+                win_build = [item_id_to_name[str(i)] for i in win_build]
+            else:
+                win_build = []
+            f.write("%s, %d, %s, %s\n" % (champion_id_to_name[str(key)], key, str(build).replace(",", ";"), str(win_build).replace(",", ";")))
             
 if __name__ == "__main__":
     main()
