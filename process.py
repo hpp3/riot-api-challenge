@@ -5,7 +5,7 @@ import os
 # Version of path
 version = None 
 
-games_to_process = 5
+games_to_process = 50
 
 with open('ap_items.set') as f:
     # items that give at least 1 AP
@@ -16,6 +16,8 @@ with open('big_items.set') as f:
 with open('full_items.set') as f:
     # items that cannot be upgraded (upgrade != transform) 
     full_items = set(map(int, f.readlines()))
+# with open('hexcore.set') as f:
+#     hexcore_items = set(map(int, f.readlines()))
 
 # JSON file dict containing item information for that patch
 item_data = None
@@ -47,6 +49,8 @@ champion_id_to_name = {}
 # {champion: {item: # of times purchased}}
 champion_item_purchased = {}
 
+tree_by_champ = {}
+
 # Example: {1: {(1, 2, 3, 4, 5, 6):10}} there 10 people to built champion with ID 1 with items 1,2,3,4,5,6
 # The item build must be sorted in a tuple
 champion_build = {}
@@ -76,17 +80,18 @@ def get_build_orders(events, filter_set = None):
     result = {(i+1):[] for i in range(10)}
     for event in events:
         if event['eventType'] == 'ITEM_PURCHASED':
-            result[event['participantId']].append((event['itemId'], event['timestamp']))
+            if filter_set and event['itemId'] in filter_set:
+                result[event['participantId']].append((event['itemId'], event['timestamp']))
     for event in events:
-        if event['eventType'] == 'ITEM_UNDO':
-            index = -1
-            for i, (itemId, timestamp) in enumerate(result[event['participantId']]):
-                print event
-                if itemId == event['itemBefore']:
-                    index = i
-            if index == -1: 
-                raise RuntimeError("couldn't find undone item")
-            result[event['participantId']].pop(index)
+        if event['eventType'] == 'ITEM_UNDO' and event['itemBefore'] != 0:
+            if filter_set and event['itemBefore'] in filter_set:
+                index = -1
+                for i, (itemId, timestamp) in enumerate(result[event['participantId']]):
+                    if itemId == event['itemBefore']:
+                        index = i
+                if index == -1:
+                    raise RuntimeError("couldn't find undone item")
+                result[event['participantId']].pop(index)
     return result
 
 def load_items():
@@ -106,8 +111,16 @@ def load_champions():
             id = data["data"][champ]["key"]
             champion_id_to_name[id] = champ
 
+class TreeNode(object):
+    def __init__(self, item):
+        self.children = {}
+        self.total = 0
+        self.wins = 0
+        self.item = item
+        self.timestamp = 0
+
 def process(path):
-    global total_games, purchases_won, num_of_purchases, games_played
+    global total_games, purchases_won, num_of_purchases, games_played, tree_by_champ
     total_files = 0
     print "Computing number of files"
     for dirpath, dirnames, filenames in os.walk(path):
@@ -142,11 +155,26 @@ def process(path):
                     if 'events' in frame:
                         events += frame['events']
 
-                #print get_build_orders(events) 
+                build_order = get_build_orders(events, ap_items & full_items & big_items)
+
                 for player in data["participants"]:
                     won = player["stats"]["winner"]
                     champ = player["championId"]
                     champ_items = []
+                    participantId = player['participantId']
+
+                    champ_tree = tree_by_champ.get(champ, TreeNode(0))
+                    current = champ_tree
+                    current.total += 1
+                    current.wins += won
+                    for item, timestamp in build_order[participantId]:
+                        if item not in current.children:
+                            current.children[item] = TreeNode(item)
+                        current = current.children[item]
+                        current.timestamp = (current.timestamp * current.total + timestamp)/(current.total+1.0)
+                        current.total += 1
+                        current.wins += won
+                    tree_by_champ[champ] = champ_tree
 
                     num_ap = 0
                     # Process item related info
@@ -170,7 +198,6 @@ def process(path):
                             champion_item_purchased[champ][item] = 0 
                         champion_item_purchased[champ][item] += 1
 
-                    print "%s bought %d ap items" % (champion_id_to_name[str(champ)], num_ap)
                     # Process champion related info
                     champion_games_played[champ] = champion_games_played.get(champ, 0) + 1
                     if won:
@@ -195,6 +222,11 @@ def process(path):
 
                 for j in local_items_played:
                     games_played[j] = games_played.get(j, 0) + 1
+
+def print_tree(champ, out):
+    if champ not in tree_by_champ:
+        return
+
 
 def main():
     if len(sys.argv) < 3:
