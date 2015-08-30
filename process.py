@@ -17,6 +17,9 @@ with open('full_items.set') as f:
     # items that cannot be upgraded (upgrade != transform) 
     full_items = set(map(int, f.readlines()))
 
+# JSON file dict containing item information for that patch
+item_data = None
+
 # Example: {69: "Lich Bane"} which means Lich Bane is id 69
 item_id_to_name = {} 
 
@@ -57,8 +60,12 @@ def is_ap(item):
 
 # This function turns items with enchantments into their basic items as
 # most enchantments are situational
-def resolve_items(item):
-    
+def resolve_item(item):
+    item_dict = item_data["data"][str(item)]
+    if "Enchantment" in item_dict["name"] and "Boots" in item_dict["group"]:
+        return int(item_dict["from"][0])
+    else:
+        return item
 
 def get_build_orders(events, filter_set = None):
     """
@@ -84,10 +91,11 @@ def get_build_orders(events, filter_set = None):
 
 def load_items():
     global item_id_to_name
+    global item_data
     with open('item' + version + '.json', 'r') as items:
-        data = json.load(items)
-        for key in data["data"]:
-            item_id_to_name[key] = data["data"][key]["name"]
+        item_data = json.load(items)
+        for key in item_data["data"]:
+            item_id_to_name[key] = item_data["data"][key]["name"]
 
 def load_champions():
     global champion_id_to_name
@@ -146,6 +154,9 @@ def process(path):
                         item = player["stats"]["item"+str(j)]
                         if item == 0:
                             continue
+                    
+                        # Remove enchantments if necessary
+                        item = resolve_item(item)
                         if is_ap(item): num_ap+=1
                         champ_items.append(item)
                         local_items_played.add(item)
