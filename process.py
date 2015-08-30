@@ -55,6 +55,11 @@ champion_winning_build = {}
 def is_ap(item):
     return item in ap_items
 
+# This function turns items with enchantments into their basic items as
+# most enchantments are situational
+def resolve_items(item):
+    
+
 def get_build_orders(events, filter_set = None):
     """
     get build order for all players
