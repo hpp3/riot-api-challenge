@@ -10,7 +10,7 @@ from time import sleep
 api_keys = [open('eddy.apikey').read().strip(),
             open('jason.apikey').read().strip()]
 api_key = api_keys[0] 
-input_directory = path.join('AP_ITEM_DATASET','5.14','RANKED_SOLO')
+input_directory = path.join('AP_ITEM_DATASET','5.11','RANKED_SOLO')
 output = 'output'
 output_directory = path.join(input_directory, output) 
 
@@ -37,10 +37,10 @@ if not path.exists(output_directory):
     print "creating output directory %s" % output_directory
     os.mkdir(output_directory)
 
-def process(api_key, region, name='N/A'):
+def process(api_key, name='N/A'):
     global games
     while (games):
-        game = games.pop()
+        game, region = games.pop()
         size = len(games)
         filename = path.join(output_directory, region, str(game) + '.json')
         if not path.isfile(filename):
@@ -75,10 +75,10 @@ for f in [f for f in os.listdir(input_directory) if path.isfile(path.join(input_
     if not path.exists(path.join(output_directory, region)):
         os.mkdir(path.join(output_directory, region))
         print "creating output directory %s" % path.join(output_directory, region)
-    games = set([game for game in json.load(open(path.join(input_directory,f))) if not path.isfile(path.join(output_directory, region, str(game) + '.json'))])
+    games = set([(game, region) for game in json.load(open(path.join(input_directory,f))) if not path.isfile(path.join(output_directory, region, str(game) + '.json'))])
     threads = []
     for apikey in api_keys:
-        threads.append(threading.Thread(target=process, args=[apikey, region, ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))]))
+        threads.append(threading.Thread(target=process, args=[apikey, ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(3))]))
     for thread in threads:
         thread.daemon = True
         thread.start()
