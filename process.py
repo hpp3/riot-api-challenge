@@ -5,6 +5,18 @@ import os
 # Version of path
 version = None 
 
+games_to_process = 5
+
+with open('ap_items.set') as f:
+    # items that give at least 1 AP
+    ap_items = set(map(int, f.readlines()))
+with open('big_items.set') as f:
+    # items that cost at least 1000 gold (in total)
+    big_items = set(map(int, f.readlines()))
+with open('full_items.set') as f:
+    # items that cannot be upgraded (upgrade != transform) 
+    full_items = set(map(int, f.readlines()))
+
 # Example: {69: "Lich Bane"} which means Lich Bane is id 69
 item_id_to_name = {} 
 
@@ -35,6 +47,30 @@ champion_item_purchased = {}
 # Example: {1: {(1, 2, 3, 4, 5, 6):10}} there 10 people to built champion with ID 1 with items 1,2,3,4,5,6
 # The item build must be sorted in a tuple
 champion_build = {}
+def is_ap(item):
+    return item in ap_items
+
+def get_build_orders(events, filter_set = None):
+    """
+    get build order for all players
+    input: timeline data[, set to filter by]
+    output: dict of participant -> list of tuple (itemId:int, timeInMilli:int)
+    """
+    result = {(i+1):[] for i in range(10)}
+    for event in events:
+        if event['eventType'] == 'ITEM_PURCHASED':
+            result[event['participantId']].append((event['itemId'], event['timestamp']))
+    for event in events:
+        if event['eventType'] == 'ITEM_UNDO':
+            index = -1
+            for i, (itemId, timestamp) in enumerate(result[event['participantId']]):
+                print event
+                if itemId == event['itemBefore']:
+                    index = i
+            if index == -1: 
+                raise RuntimeError("couldn't find undone item")
+            result[event['participantId']].pop(index)
+    return result
 
 def load_items():
     global item_id_to_name
@@ -68,6 +104,8 @@ def process(path):
             progress_counter += 1.0
             sys.stderr.write("\rProgress: %f%%" % (progress_counter / total_files * 100)) 
             total_games += 1
+            if total_games > games_to_process:
+                exit()
             with open(f) as json_input:
                 local_items_played = set()
                 try:
@@ -80,16 +118,25 @@ def process(path):
                     print "Check", f
                     continue
 
+                timeline = data['timeline']
+                events = []
+                for frame in timeline['frames']:
+                    if 'events' in frame:
+                        events += frame['events']
+
+                print get_build_orders(events) 
                 for player in data["participants"]:
                     won = player["stats"]["winner"]
                     champ = player["championId"]
                     champ_items = []
 
+                    num_ap = 0
                     # Process item related info
                     for j in range(7):
                         item = player["stats"]["item"+str(j)]
                         if item == 0:
                             continue
+                        if is_ap(item): num_ap+=1
                         champ_items.append(item)
                         local_items_played.add(item)
                         num_of_purchases[item] = num_of_purchases.get(item, 0) + 1
@@ -102,6 +149,7 @@ def process(path):
                             champion_item_purchased[champ][item] = 0 
                         champion_item_purchased[champ][item] += 1
 
+                    print "%s bought %d ap items" % (champion_id_to_name[str(champ)], num_ap)
                     # Process champion related info
                     champion_games_played[champ] = champion_games_played.get(champ, 0) + 1
                     if won:
