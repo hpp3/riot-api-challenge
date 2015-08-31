@@ -1,3 +1,4 @@
+import pickle
 import sys
 import json
 import os
@@ -5,7 +6,7 @@ import os
 # Version of path
 version = None 
 
-games_to_process = 50
+games_to_process = 10**19
 
 with open('ap_items.set') as f:
     # items that give at least 1 AP
@@ -141,7 +142,7 @@ def process(path):
                 local_items_played = set()
                 try:
                     data = json.load(json_input)
-                except:
+                except Exception:
                     print "Something wrong with this file", f 
 
                 if "participants" not in data:
@@ -223,9 +224,29 @@ def process(path):
                 for j in local_items_played:
                     games_played[j] = games_played.get(j, 0) + 1
 
-def print_tree(champ, out):
-    if champ not in tree_by_champ:
-        return
+def build_from_tree(tree, parent_games):
+    result = {}
+    result['children'] = {} 
+    for item in tree.children:
+        result['children'][item]=build_from_tree(tree.children[item], tree.total)
+    result['popularity'] = 1.0 * tree.total / parent_games 
+    result['winrate'] = 1.0 * tree.wins / tree.total
+    result['games'] = tree.total
+    seconds = tree.timestamp / 1000
+    result['time'] = "%d:%0.2d" % (seconds / 60, seconds % 60)
+    return result
+
+
+def store_tree(tree, out):
+    obj = {}
+    for champ in tree:
+        obj[champ] = {}
+        root = tree[champ]
+        champion = obj[champ]
+        champion['popularity'] = 1.0 * root.total / total_games
+        champion['winrate'] = 1.0 * root.wins / root.total
+        champion['build'] = build_from_tree(root, root.total)['children']
+    json.dump(obj, out)
 
 
 def main():
@@ -241,18 +262,25 @@ def main():
     load_champions()
     process(sys.argv[1])
 
+    with open('tree', 'w') as f:
+        pickle.dump(tree_by_champ, f)
+    with open('build_tree_%s.json'%version, 'w') as f:
+        store_tree(tree_by_champ, f)
+
     with open('item_%s.csv'%version,'w') as f:
+        f.write('name,id,popularity,winrate\n')
         for key in games_played:
             f.write("%s,%d,%f,%f\n" % (item_id_to_name[str(key)],key,float(num_of_purchases.get(key, 0)) / total_games,float(purchases_won.get(key, 0)) / num_of_purchases.get(key, 0)))
 
     with open('champ_%s.csv'%version,'w') as f:
+        f.write('name,id,popularity,winrate\n')
         for key in champion_games_played:
             f.write("%s,%d,%f,%f\n" % (champion_id_to_name[str(key)],key,float(champion_games_played.get(key, 0)) / total_games,float(champion_games_won.get(key, 0)) / champion_games_played.get(key, 0)))
     
     with open('champ_items_%s.csv'%version,'w') as f:
-        f.write("Champion Name, Champion Key, ")
+        f.write("name,id,")
         for item in item_id_to_name:
-            f.write(item_id_to_name[item] + " bought, ")
+            f.write(item + ",")
         f.write("\n")
             
         for key in champion_item_purchased:
@@ -265,7 +293,7 @@ def main():
             f.write("\n")
 
     with open('champ_build_%s.csv' % version, 'w') as f:
-        f.write("Champion Name, Champion Key, Most Frequent Build, Most Frequent Winning Build\n") 
+        f.write("name,id,frequent_build,winning_build\n")
         for key in champion_build:
             count, build = max((v, k) for k, v in champion_build[key].items())
             build = [item_id_to_name[str(i)] for i in build]
