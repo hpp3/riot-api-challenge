@@ -16,3 +16,6 @@ exports.champ_chart = function(req, res){
 exports.champ_page = function(req, res){
   res.render('champ_page', {id: req.param.id, ap: req.query.ap})
 };
+exports.about = function(req, res){
+  res.render('about', {})
+};

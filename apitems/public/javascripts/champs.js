@@ -3,7 +3,7 @@
   var data_version = 'v7';
   function load_data(callback) {
     var loaded = 0;
-    var total_loads = 4;
+    var total_loads = 8;
     d3.json('/data/'+data_version+'/champion14.json', function(err, champion_data) {
       module.champion_data = champion_data;
       d3.csv('/data/'+data_version+'/champ_11.csv', process, function(err, champs_11) {
@@ -27,6 +27,69 @@
         if (loaded == total_loads) callback();
       });
     });
+    d3.json('/data/'+data_version+'/item11.json', function(err, item11) {
+      module.item11 = item11;
+      console.log(err);
+      d3.csv('/data/'+data_version+'/ap_champ_build_11.csv', fix11, function(err, ap_champs_build_11) {
+        module.ap_champs_build_11 = ap_champs_build_11;
+        loaded += 1;
+        if (loaded == total_loads) callback();
+      });
+      d3.csv('/data/'+data_version+'/champ_build_11.csv', fix11, function(err, champs_build_11) {
+        module.champs_build_11 = champs_build_11;
+        loaded += 1;
+        if (loaded == total_loads) callback();
+      });
+
+    });
+    d3.json('/data/'+data_version+'/item14.json', function(err, item14) {
+      module.item14 = item14;
+      d3.csv('/data/'+data_version+'/ap_champ_build_14.csv', fix14, function(err, ap_champs_build_14) {
+        console.log(err);
+        module.ap_champs_build_14 = ap_champs_build_14;
+        loaded += 1;
+        if (loaded == total_loads) callback();
+      });
+      d3.csv('/data/'+data_version+'/champ_build_14.csv', fix14, function(err, champs_build_14) {
+        module.champs_build_14 = champs_build_14;
+        loaded += 1;
+        if (loaded == total_loads) callback();
+      });
+    });
+  }
+
+  function resolveName(name, patch) {
+    if (patch == '11')
+      var items = module.item11;
+    else var items = module.item14;
+    var item_dict = items['data'];
+    var id = 0;
+    for (var item in item_dict) {
+      if (item_dict.hasOwnProperty(item)){
+        if (item_dict[item].name == name) {
+          id = item; 
+          break;
+        }
+      } 
+    }
+    console.log(id);
+    return 'https://ddragon.leagueoflegends.com/cdn/5.'+patch+'.1/img/item/'+id+'.png';
+  }
+
+  function fix11(data) {
+    return fix(data, '11');
+  }
+
+  function fix14(data) {
+    return fix(data, '14');
+  }
+
+  function fix(data, patch) {
+    // data.frequent_build = JSON.parse(data.frequent_build);
+    // data.winning_build = JSON.parse(data.winning_build);
+    // data.frequent_build = data.frequent_build.map(function(d) {return resolveName(d, patch)}); 
+    // data.winning_build = data.winning_build.map(function(d) {return resolveName(d, patch)});
+    return data;
   }
 
   function process(data) {

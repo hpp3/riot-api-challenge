@@ -1,0 +1,25 @@
+.navbar.navbar-default.navbar-static-top(role='navigation')
+  .container
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/') API(tems)
+    .navbar-collapse.collapse
+      ul.nav.navbar-nav
+        li
+          a(href='/') Home
+        li
+          a(href='/items') Items
+        li
+          a(href='/champions/chart') Champions
+        li.active
+          a(href='/about') About
+.container
+  .jumbotron
+    h1 About the project
+    p We analyzed 10,000 ranked games from each region for Patch 5.11 and Patch 5.14, for a total of 200,000 games analyzed. We processed the data and generated win rates and popularity for items and champions.
+    p Items are divided by AP items and all items. An AP item is any item that gives AP other than Trinity Force, Guinsoo's Rageblade, and Zeke's Harbinger (we didn't consider these core AP items). We merged all boot enchantments into the base items because we felt that the boot enchantments were largely situational. Sated Devourer was combined with Devourer in data from Patch 5.14, because otherwise Devourer was an outlier in terms of low win rate. We chose not to show Prototype Hex-core, The Black Spear, Elixirs, and trinkets as they were outliers in the data.
+    p Champions were divided into AP and non-AP variants. For a champion like Annie, there isn't much difference between AP Annie and normal Annie. But for a champion like Xin Zhao, there is a big difference between AP Xin Zhao and normal Xin Zhao and we wanted to show that. We defined a champion to be played as AP when over 40% of their items in the final build are AP items. 
