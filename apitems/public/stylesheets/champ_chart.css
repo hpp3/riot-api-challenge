@@ -32,3 +32,6 @@ line {
   z-index: 5;
 }
 
+#threshold {
+  width: 6em;
+}

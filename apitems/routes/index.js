@@ -13,3 +13,6 @@ exports.items = function(req, res){
 exports.champ_chart = function(req, res){
   res.render('champ_chart', {})
 };
+exports.champ_page = function(req, res){
+  res.render('champ_page', {id: req.param.id, ap: req.query.ap})
+};

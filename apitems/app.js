@@ -35,6 +35,7 @@ app.configure('production', function(){
 app.get('/', routes.index);
 app.get('/items', routes.items);
 app.get('/champions/chart', routes.champ_chart);
+app.get('/champ/:id', routes.champ_page);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
