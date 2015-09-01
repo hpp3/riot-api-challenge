@@ -8,9 +8,8 @@ exports.index = function(req, res){
   res.render('index', { title: 'Express' })
 };
 exports.items = function(req, res){
-  console.log(data);
-  res.render('items', { title: 'Express' })
+  res.render('items', {})
 };
-exports.passData = function(key,value) {
-   data[key] = value; 
-}
+exports.champ_chart = function(req, res){
+  res.render('champ_chart', {})
+};

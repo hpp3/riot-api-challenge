@@ -13,27 +13,20 @@ html
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        a.navbar-brand(href='#') API(tems)
+        a.navbar-brand(href='/') API(tems)
       .navbar-collapse.collapse
         ul.nav.navbar-nav
           li.active
-            a(href='#') Home
-          li.dropdown
-            a.dropdown-toggle(href='#', data-toggle='dropdown')
-              | Items
-              span.caret
-            ul.dropdown-menu(role='menu')
-              li
-                a(href='#') Chart
-              li
-                a(href='#') Individual
+            a(href='/') Home
+          li
+            a(href='/items') Items
           li.dropdown
             a.dropdown-toggle(href='#', data-toggle='dropdown')
               | Champions
               span.caret
             ul.dropdown-menu(role='menu')
               li
-                a(href='#') Chart
+                a(href='/champions/chart') Chart
               li
                 a(href='#') Individual
 
