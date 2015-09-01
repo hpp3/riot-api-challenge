@@ -7,6 +7,7 @@ import os
 version = None 
 
 games_to_process = 10**19
+# games_to_process = 15
 
 with open('ap_items.set') as f:
     # items that give at least 1 AP
@@ -63,12 +64,14 @@ champion_winning_build = {}
 def is_ap(item):
     return item in ap_items
 
-# This function turns items with enchantments into their basic items as
-# most enchantments are situational
+# This function turns boots with enchantments into their basic items as
+# most enchantments are situational, and also merges sated devourer with devourer
 def resolve_item(item):
     item_dict = item_data["data"][str(item)]
     if "Enchantment" in item_dict["name"] and "Boots" in item_dict["group"]:
         return int(item_dict["from"][0])
+    elif "Sated Devourer" in item_dict['name']:
+        return int(item_dict['from'][0])
     else:
         return item
 
@@ -95,13 +98,30 @@ def get_build_orders(events, filter_set = None):
                 result[event['participantId']].pop(index)
     return result
 
+def item_name(item):
+    item_dict = item_data['data']
+    if 'Enchantment' in item['name'] and 'group' in item and 'JungleItems' in item['group']:
+        if 'Sated Devourer' in item['name']:
+            enchanted = item_dict[item['from'][0]]
+        else:
+            enchanted = item
+        for part in enchanted['from']:
+            if 'group' in item_dict[part] and 'JungleItems' in item_dict[part]['group']:
+                smite_name = item_dict[part]['name']
+        base_name = item['name'][13:]
+        if base_name == "Devourer" and version == '14':
+            base_name = "(Sated) Devourer"
+        return "%s - %s" % (base_name, smite_name) 
+    else:
+        return item['name']
+
 def load_items():
     global item_id_to_name
     global item_data
     with open('item' + version + '.json', 'r') as items:
         item_data = json.load(items)
         for key in item_data["data"]:
-            item_id_to_name[key] = item_data["data"][key]["name"]
+            item_id_to_name[key] = item_name(item_data["data"][key])
 
 def load_champions():
     global champion_id_to_name
@@ -228,7 +248,8 @@ def build_from_tree(tree, parent_games):
     result = {}
     result['children'] = {} 
     for item in tree.children:
-        result['children'][item]=build_from_tree(tree.children[item], tree.total)
+        if tree.children[item].total >=100:
+            result['children'][item]=build_from_tree(tree.children[item], tree.total)
     result['popularity'] = 1.0 * tree.total / parent_games 
     result['winrate'] = 1.0 * tree.wins / tree.total
     result['games'] = tree.total
@@ -262,8 +283,6 @@ def main():
     load_champions()
     process(sys.argv[1])
 
-    with open('tree', 'w') as f:
-        pickle.dump(tree_by_champ, f)
     with open('build_tree_%s.json'%version, 'w') as f:
         store_tree(tree_by_champ, f)
 
