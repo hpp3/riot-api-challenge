@@ -1,0 +1,168 @@
+name,id,popularity,winrate
+The Bloodthirster,3072,0.003829,0.563969
+Sightstone,2049,0.286346,0.517842
+Blasting Wand,1026,0.531619,0.473069
+Thornmail,3075,0.027475,0.533843
+Ruby Crystal,1028,0.077835,0.462299
+Cloth Armor,1029,0.092672,0.437588
+Trinity Force,3078,0.167798,0.467914
+Chain Vest,1031,0.033674,0.456651
+Null-Magic Mantle,1033,0.041292,0.472155
+Warden's Mail,3082,0.033464,0.436212
+Warmog's Armor,3083,0.009578,0.583507
+Long Sword,1036,0.017097,0.423392
+Ravenous Hydra (Melee Only),3074,0.002350,0.561702
+B. F. Sword,1038,0.009608,0.543184
+Statikk Shiv,3087,0.003539,0.483051
+Rabadon's Deathcap,3089,0.959398,0.593749
+Dagger,1042,0.012448,0.418474
+Wit's End,3091,0.004629,0.596112
+Frost Queen's Claim,3092,0.216379,0.529803
+Avarice Blade,3093,0.001940,0.458763
+Nomad's Medallion,3096,0.007609,0.498029
+Targon's Brace,3097,0.003209,0.492212
+Frostfang,3098,0.052630,0.467515
+Brawler's Gloves,1051,0.000690,0.521739
+Amplifying Tome,1052,0.322249,0.470231
+Vampiric Scepter,1053,0.015567,0.421323
+Doran's Shield,1054,0.050400,0.484031
+Doran's Blade,1055,0.064468,0.428660
+Doran's Ring,1056,0.897230,0.464754
+Negatron Cloak,1057,0.061018,0.449615
+Needlessly Large Rod,1058,0.501315,0.558764
+Fiendish Codex,3108,0.091353,0.418956
+Frozen Heart,3110,0.086224,0.573284
+Mercury's Treads,3111,0.159340,0.517914
+Aether Wisp,3113,0.185795,0.404617
+Forbidden Idol,3114,0.043292,0.453118
+Nashor's Tooth,3115,0.082304,0.535957
+Rylai's Crystal Scepter,3116,0.231306,0.573374
+Boots of Mobility,3117,0.198372,0.538128
+Guinsoo's Rageblade,3124,0.003719,0.594086
+Zeal,3086,0.001710,0.526316
+The Brutalizer,3134,0.001730,0.502890
+Void Staff,3135,0.487377,0.573881
+Haunting Guise,3136,0.073206,0.507238
+Mercurial Scimitar,3139,0.000180,0.666667
+Quicksilver Sash,3140,0.003409,0.489736
+Sword of the Occult,3141,0.000650,0.738462
+Youmuu's Ghostblade,3142,0.001350,0.674074
+Randuin's Omen,3143,0.034913,0.541810
+Bilgewater Cutlass,3144,0.015067,0.477770
+Hextech Revolver,3145,0.023236,0.484079
+Hextech Gunblade,3146,0.059119,0.529511
+Liandry's Torment,3151,0.242094,0.568142
+Will of the Ancients,3152,0.165359,0.528932
+Blade of the Ruined King,3153,0.017177,0.545402
+Hexdrinker,3155,0.002630,0.551331
+Maw of Malmortius,3156,0.000830,0.530120
+Zhonya's Hourglass,3157,1.103870,0.558619
+Ionian Boots of Lucidity,3158,0.233686,0.536944
+Elixir of Ruin,2137,0.000120,0.583333
+Elixir of Iron,2138,0.000490,0.612245
+Elixir of Sorcery,2139,0.006419,0.535826
+Elixir of Wrath,2140,0.000090,0.555556
+Morellonomicon,3165,0.596647,0.522321
+Zephyr,3172,0.000750,0.626667
+Athene's Unholy Grail,3174,0.266129,0.505898
+Recurve Bow,1043,0.009788,0.478039
+Locket of the Iron Solari,3190,0.014387,0.610146
+Seeker's Armguard,3191,0.223528,0.407926
+Stalker's Blade,3706,0.006459,0.430341
+Enchantment: Warrior,3707,0.013967,0.566213
+Enchantment: Magus,3708,0.050330,0.559396
+The Hex Core mk-2,3197,0.010438,0.448276
+Perfect Hex Core,3198,0.027125,0.521563
+Poacher's Knife,3711,0.000210,0.190476
+Sapphire Crystal,1027,0.012508,0.456435
+Ranger's Trailblazer,3713,0.002669,0.434457
+Enchantment: Warrior,3714,0.001410,0.524823
+Skirmisher's Sabre,3715,0.000780,0.487179
+Enchantment: Magus,3716,0.004179,0.538278
+Enchantment: Cinderhulk,3717,0.007839,0.534439
+Enchantment: Devourer,3718,0.001240,0.475806
+Enchantment: Warrior,3719,0.000030,0.333333
+Enchantment: Magus,3720,0.000590,0.508475
+Enchantment: Cinderhulk,3721,0.001140,0.508772
+Enchantment: Devourer,3722,0.000370,0.432432
+Spectre's Cowl,3211,0.046211,0.472090
+Enchantment: Magus,3724,0.048451,0.532811
+Enchantment: Cinderhulk,3725,0.023316,0.647942
+Enchantment: Devourer,3726,0.001760,0.568182
+Mikael's Crucible,3222,0.017957,0.644209
+Bami's Cinder,3751,0.007549,0.488742
+Lich Bane,3100,0.335776,0.533617
+Stinger,3101,0.010018,0.523952
+Banshee's Veil,3102,0.028655,0.576413
+Aegis of the Legion,3105,0.004719,0.540254
+Luden's Echo,3285,1.057679,0.562209
+Righteous Glory,3800,0.012468,0.634322
+Crystalline Bracer,3801,0.007289,0.480110
+Raptor Cloak,2053,0.001600,0.631250
+Ancient Coin,3301,0.010698,0.447664
+Relic Shield,3302,0.005269,0.491461
+Spellthief's Edge,3303,0.055150,0.473532
+The Hex Core mk-1,3196,0.007079,0.439266
+Enchantment: Cinderhulk,3709,0.018676,0.587794
+Rod of Ages,3027,0.520831,0.525694
+Enchantment: Devourer,3710,0.003649,0.558904
+Mana Potion,2004,0.149182,0.396756
+Tiamat (Melee Only),3077,0.001160,0.603448
+Prototype Hex Core,3200,0.000340,0.117647
+Infinity Edge,3031,0.003619,0.519337
+Warding Totem (Trinket),3340,2.139783,0.482345
+Sweeping Lens (Trinket),3341,0.330917,0.537676
+Scrying Orb (Trinket),3342,0.030754,0.506177
+Greater Stealth Totem (Trinket),3361,0.273918,0.568201
+Greater Vision Totem (Trinket),3362,0.094872,0.576984
+Farsight Orb (Trinket),3363,0.019226,0.599064
+Oracle's Lens (Trinket),3364,0.132755,0.608450
+Enchantment: Warrior,3723,0.001840,0.559783
+Face of the Mountain,3401,0.006929,0.611833
+Faerie Charm,1004,0.010368,0.459016
+Pickaxe,1037,0.013267,0.406933
+Ardent Censer,3504,0.029624,0.621667
+Essence Reaver,3508,0.003919,0.551020
+Zz'Rot Portal,3512,0.003989,0.593985
+Abyssal Scepter,3001,0.290095,0.548027
+Archangel's Staff,3003,0.024865,0.474065
+Manamune,3004,0.006149,0.541463
+Berserker's Greaves,3006,0.021736,0.470561
+Boots of Swiftness,3009,0.019306,0.569135
+Catalyst the Protector,3010,0.018127,0.421953
+Sorcerer's Shoes,3020,1.925294,0.519412
+Frozen Mallet,3022,0.000660,0.666667
+Twin Shadows,3023,0.020416,0.588639
+Glacial Shroud,3024,0.026465,0.466944
+Iceborn Gauntlet,3025,0.075306,0.559081
+Guardian Angel,3026,0.029864,0.594576
+Health Potion,2003,0.278827,0.395797
+Chalice of Harmony,3028,0.033534,0.452296
+Crystalline Flask,2041,0.149932,0.457322
+Total Biscuit of Rejuvenation,2010,0.089603,0.390761
+Last Whisper,3035,0.004929,0.476673
+Seraph's Embrace,3040,0.166918,0.542258
+Mejai's Soulstealer,3041,0.065358,0.672327
+Muramana,3042,0.008148,0.385276
+Kindlegem,3067,0.019446,0.484833
+Phage,3044,0.002450,0.571429
+Phantom Dancer,3046,0.000440,0.568182
+Ninja Tabi,3047,0.094762,0.505275
+Hunter's Machete,1039,0.001340,0.432836
+Boots of Speed,1001,0.253242,0.404911
+Zeke's Herald,3050,0.000880,0.647727
+Runaan's Hurricane (Ranged Only),3085,0.021126,0.558448
+Sunfire Cape,3068,0.024605,0.596912
+Rejuvenation Bead,1006,0.002580,0.426357
+Talisman of Ascension,3069,0.031704,0.596657
+Ohmwrecker,3056,0.000370,0.648649
+Sheen,3057,0.058589,0.476962
+Giant's Belt,1011,0.100381,0.512649
+Banner of Command,3060,0.009218,0.647505
+Spirit Visage,3065,0.066227,0.552234
+Cloak of Agility,1018,0.002430,0.353909
+Vision Ward,2043,0.049691,0.495573
+Stealth Ward,2044,0.049741,0.459497
+Ruby Sightstone,2045,0.060229,0.597278
+Tear of the Goddess,3070,0.062148,0.393179
+The Black Cleaver,3071,0.000980,0.510204

@@ -1,6 +1,6 @@
 (function() {
   var module = {};
-  var data_version = 'v5.2';
+  var data_version = 'v7';
   function load_data(callback) {
     var loaded = 0;
     var total_loads = 4;
