@@ -161,11 +161,12 @@
     }, {});
     champs14.forEach(function (champ) {
       var processed = {}
-      if (champ.name.split(" ")[0] == "AP") {
-        processed.name = "<a href='/champ/"+champ.id+"?ap=1'>"+champ.name+'</a>';
-      } else {
-        processed.name = "<a href='/champ/"+champ.id+"'>"+champ.name+'</a>';
-      }
+      // if (champ.name.split(" ")[0] == "AP") {
+      //   processed.name = "<a href='/champ/"+champ.id+"?ap=1'>"+champ.name+'</a>';
+      // } else {
+      //   processed.name = "<a href='/champ/"+champ.id+"'>"+champ.name+'</a>';
+      // }
+      processed.name = champ.name;
       processed.winrate14 = champ.winrate;
       processed.popularity14 = champ.popularity;
       if (map11[champ.id]) {
